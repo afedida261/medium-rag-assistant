@@ -1,3 +1,13 @@
 .venv/
+__pycache__/
+*.pyc
+
 data/
-/.env
+node_modules/
+.next/
+.vercel/
+
+.env
+.env.local
+.env.*
+!.env.example
