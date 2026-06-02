@@ -1,0 +1,41 @@
+{
+  "name": "medium-rag-assistant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ingest": "tsx scripts/ingest.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afedida261/medium-rag-assistant.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/afedida261/medium-rag-assistant/issues"
+  },
+  "homepage": "https://github.com/afedida261/medium-rag-assistant#readme",
+  "dependencies": {
+    "@pinecone-database/pinecone": "^7.2.0",
+    "dotenv": "^17.4.2",
+    "next": "^16.2.6",
+    "openai": "^6.39.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
+}

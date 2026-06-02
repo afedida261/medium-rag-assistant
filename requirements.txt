@@ -3,3 +3,5 @@ pandas
 scikit-learn
 matplotlib
 ipykernel
+python-dotenv
+tqdm
