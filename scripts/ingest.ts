@@ -6,7 +6,7 @@ import { Pinecone } from "@pinecone-database/pinecone";
 
 dotenv.config({ path: ".env.local" });
 
-const CHUNKS_PATH = "data/chunks_sample.jsonl";
+const DEFAULT_CHUNKS_PATH = "data/chunks_full.jsonl";
 const EMBEDDING_MODEL = "4UHRUIN-text-embedding-3-small";
 const BATCH_SIZE = 50;
 
@@ -46,6 +46,21 @@ async function readJsonl(path: string): Promise<ChunkRecord[]> {
   return records;
 }
 
+function getChunksPath(): string {
+  return process.env.CHUNKS_PATH || DEFAULT_CHUNKS_PATH;
+}
+
+function buildEmbeddingInput(record: ChunkRecord): string {
+  const parts = [
+    `Title: ${record.title}`,
+    `Tags: ${record.tags}`,
+    `Authors: ${record.authors}`,
+    `Chunk: ${record.chunk}`,
+  ];
+
+  return parts.join("\n");
+}
+
 async function main() {
   const llmodApiKey = requireEnv("LLMOD_API_KEY");
   const llmodBaseUrl = requireEnv("LLMOD_BASE_URL");
@@ -62,17 +77,18 @@ async function main() {
   });
 
   const index = pc.index(pineconeIndexName);
+  const chunksPath = getChunksPath();
 
-  const records = await readJsonl(CHUNKS_PATH);
+  const records = await readJsonl(chunksPath);
 
-  console.log(`Loaded ${records.length} chunks from ${CHUNKS_PATH}`);
+  console.log(`Loaded ${records.length} chunks from ${chunksPath}`);
 
   for (let i = 0; i < records.length; i += BATCH_SIZE) {
     const batch = records.slice(i, i + BATCH_SIZE);
 
     const embeddingResponse = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
-      input: batch.map((record) => record.chunk),
+      input: batch.map(buildEmbeddingInput),
     });
 
     const vectors = batch.map((record, j) => ({

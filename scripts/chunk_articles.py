@@ -1,18 +1,16 @@
+import argparse
 import json
 import pandas as pd
 from pathlib import Path
 
 
 CSV_PATH = Path("data") / "medium-english-50mb.csv"
-OUTPUT_PATH = Path("data") / "chunks_sample.jsonl"
+DEFAULT_OUTPUT_PATH = Path("data") / "chunks_full.jsonl"
 
-CHUNK_SIZE = 512
-OVERLAP_RATIO = 0.15    
+CHUNK_SIZE = 640
+OVERLAP_RATIO = 0.2
 OVERLAP = int(CHUNK_SIZE * OVERLAP_RATIO)
 STEP = CHUNK_SIZE - OVERLAP
-
-MAX_ARTICLES = 100  # start small for testing
-
 
 def clean_text(text: str) -> str:
     return " ".join(str(text).split())
@@ -37,17 +35,26 @@ def chunk_text(text: str):
     return chunks
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
+    parser.add_argument("--max-articles", type=int, default=None)
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     df = pd.read_csv(CSV_PATH)
     df = df.reset_index().rename(columns={"index": "article_id"})
 
     df["text"] = df["text"].apply(clean_text)
     df = df[df["text"].str.len() > 200]
 
-    if MAX_ARTICLES:
-        df = df.head(MAX_ARTICLES)
+    if args.max_articles is not None:
+        df = df.head(args.max_articles)
 
-    output_file = Path(OUTPUT_PATH)
+    output_file = Path(args.output)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     total_chunks = 0
@@ -73,7 +80,7 @@ def main():
                 f.write(json.dumps(record, ensure_ascii=False) + "\n")
                 total_chunks += 1
 
-    print(f"Created {total_chunks} chunks at {OUTPUT_PATH}")
+    print(f"Created {total_chunks} chunks at {output_file}")
 
 
 if __name__ == "__main__":

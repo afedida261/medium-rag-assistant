@@ -1,7 +1,5 @@
+import { RAG_CONFIG } from "@/lib/rag-config";
+
 export async function GET() {
-  return Response.json({
-    chunk_size: 512,
-    overlap_ratio: 0.15,
-    top_k: 5,
-  });
+  return Response.json(RAG_CONFIG);
 }

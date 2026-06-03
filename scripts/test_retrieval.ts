@@ -1,11 +1,9 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import { Pinecone } from "@pinecone-database/pinecone";
+import { EMBEDDING_MODEL, RAG_CONFIG } from "../lib/rag-config";
 
 dotenv.config({ path: ".env.local" });
-
-const EMBEDDING_MODEL = "4UHRUIN-text-embedding-3-small";
-const TOP_K = 5;
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -39,7 +37,7 @@ async function main() {
 
   const results = await index.query({
     vector: queryVector,
-    topK: TOP_K,
+    topK: RAG_CONFIG.top_k,
     includeMetadata: true,
   });
 

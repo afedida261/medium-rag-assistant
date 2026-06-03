@@ -10,7 +10,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "ingest": "tsx scripts/ingest.ts"
+    "ingest": "tsx scripts/ingest.ts",
+    "eval": "tsx scripts/eval_queries.ts",
+    "chunk:eval1000": "python scripts/chunk_articles.py --max-articles 1000 --output data/chunks_eval_1000.jsonl"
   },
   "repository": {
     "type": "git",
